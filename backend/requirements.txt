@@ -1,0 +1,10 @@
+django
+django-cors-headers
+django-filter
+django-rest-knox
+djangorestframework
+djangorestframework-simplejwt[crypto]
+drf-spectacular
+gunicorn
+psycopg2-binary
+uvicorn
