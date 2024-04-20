@@ -1,0 +1,43 @@
+.container {
+    max-width: 100%;
+}
+
+.content-wrapper {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.navbar-logo {
+    width: 32px;
+    height: 32px;
+}
+
+.loading-gif {
+    width: 38px;
+}
+
+/* Add color to texts */
+.mint {
+    color: #4caf6d;
+}
+
+/* unvisited link */
+a:link {
+    color: #4caf6d;
+}
+
+/* visited link */
+a:visited {
+    color: #4caf6d;
+}
+
+/* mouse over link */
+a:hover {
+    color: #388e3c;
+}
+
+/* selected link */
+a:active {
+    color: #1b5e20;
+}
