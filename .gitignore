@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/django,node,linux
 # Edit at https://www.toptal.com/developers/gitignore?templates=django,node,linux
 
+# Certbot data:
+certbot/
+
 ### Django ###
 *.log
 *.pot
