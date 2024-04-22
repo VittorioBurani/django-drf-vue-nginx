@@ -10,4 +10,5 @@ def server_descriptors(request:HttpRequest|None):
         'http_port': settings.HTTP_PORT,
         'https_port': settings.HTTPS_PORT,
         'domain_url': settings.DOMAIN_URL,
+        'domain_url_secure': settings.DOMAIN_URL_SECURE,
     }

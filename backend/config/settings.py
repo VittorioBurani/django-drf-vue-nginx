@@ -45,7 +45,8 @@ HTTPS_PORT = os.environ.get('HTTPS_PORT')
 BASE_URL = f'http://{PRIVATE_SERVER_IP}:{HTTP_PORT}'
 BASE_URL_SECURE = f'https://{PRIVATE_SERVER_IP}:{HTTPS_PORT}'
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
-DOMAIN_URL = f'https://{DOMAIN_NAME}'
+DOMAIN_URL = f'http://{DOMAIN_NAME}'
+DOMAIN_URL_SECURE = f'https://{DOMAIN_NAME}'
 
 
 # Application definition
@@ -111,6 +112,7 @@ CSRF_TRUSTED_ORIGINS = [
     BASE_URL,
     BASE_URL_SECURE,
     DOMAIN_URL,
+    DOMAIN_URL_SECURE,
 ]
 
 # Django CORS Headers:
@@ -272,7 +274,7 @@ SPECTACULAR_SETTINGS = {
             'description': 'Development'
         },
         {
-            'url': DOMAIN_URL,
+            'url': DOMAIN_URL_SECURE,
             'description': 'Production'
         }
     ],
