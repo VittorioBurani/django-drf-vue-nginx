@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:?err}
+    environment:
+      DEPLOYMENT_STAGE: 'DEVELOPMENT'
+    volumes:
+      - ./backend:/backend
+      - static_volume:/backend/static-serve
+      - media_volume:/backend/media-serve
+    ports:
+      - ${HTTP_PORT:-80}:8000
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:${POSTGRES_VERSION:?err}-alpine
+    user: ${DB_USERNAME:?err}
+    environment:
+      POSTGRES_DB: ${DB_NAME:?err}
+      POSTGRES_USER: ${DB_USERNAME:?err}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?err}
+      POSTGRES_PORT: 5432
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
