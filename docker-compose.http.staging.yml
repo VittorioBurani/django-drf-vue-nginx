@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+
+  django:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:?err}
+    environment:
+      DEPLOYMENT_STAGE: 'STAGING'
+    volumes:
+      - ./backend:/backend
+      - static_volume:/backend/static-serve
+      - media_volume:/backend/media-serve
+    env_file:
+      - ./.env
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: postgres:${POSTGRES_VERSION:?err}-alpine
+    user: ${DB_USERNAME:?err}
+    environment:
+      POSTGRES_DB: ${DB_NAME:?err}
+      POSTGRES_USER: ${DB_USERNAME:?err}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?err}
+      POSTGRES_PORT: 5432
+    env_file:
+      - ./.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
+
+  nginx:
+    build:
+      context: ./nginx/http
+      dockerfile: Dockerfile
+      args:
+        NGINX_VERSION: ${NGINX_VERSION:?err}
+    volumes:
+      - static_volume:/static-serve
+      - media_volume:/media-serve
+      - ./nginx/http/vue_build:/vue_build
+    ports:
+      - ${HTTP_PORT:-80}:80
+    env_file:
+      - ./.env
+    depends_on:
+      - django
+    restart: always
+
+volumes:
+  static_volume:
+  media_volume:
+  postgres_data:
+
+# networks:
+#   default:
+#     external: false
+#     name: services
