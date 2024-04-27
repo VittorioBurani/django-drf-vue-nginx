@@ -297,12 +297,12 @@ REST_KNOX = {
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
-    "ROTATE_REFRESH_TOKENS": False,
+    "ROTATE_REFRESH_TOKENS": True,
     "UPDATE_LAST_LOGIN": False,
 
-    "ALGORITHM": "HS256",
-    "SIGNING_KEY": PRIVATE_KEY,  # Private Key if RSA, both if HMAC
-    "VERIFYING_KEY": PUBLIC_KEY, # Public Key if RSA, ignored if HMAC
+    "ALGORITHM": "RS256",
+    "SIGNING_KEY": open(BASE_DIR / PRIVATE_KEY, 'rb').read(),
+    "VERIFYING_KEY": open(BASE_DIR / PUBLIC_KEY, 'rb').read(),
     "AUDIENCE": None,
     "ISSUER": None,
     "JSON_ENCODER": None,

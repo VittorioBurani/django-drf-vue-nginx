@@ -4,6 +4,9 @@
 # Certbot data:
 certbot/
 
+# RSA Keys:
+*.pem
+
 ### Django ###
 *.log
 *.pot
