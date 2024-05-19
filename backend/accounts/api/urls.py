@@ -2,6 +2,7 @@ from django.urls import path
 from knox import views as knox_views
 from .views import (
     CurrentUserAPIView,
+    UserPasswordResetAPIView,
     LoginAPIView,
 )
 from rest_framework_simplejwt.views import (
@@ -13,6 +14,7 @@ from rest_framework_simplejwt.views import (
 urlpatterns = [
     # Generic user views:
     path('get-user/', CurrentUserAPIView.as_view(), name='get-user'),
+    path('password-reset/', UserPasswordResetAPIView.as_view(), name='password-reset'),
     # Django-Rest-Knox + Auth:
     path('login/', LoginAPIView.as_view(), name="knox-login"),
     path('logout/', knox_views.LogoutView.as_view(), name="knox-logout"),
