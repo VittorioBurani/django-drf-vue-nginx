@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import UserManager from './UserManager.vue';
 </script>
 
 <template>
@@ -28,9 +29,7 @@ import { RouterLink } from 'vue-router'
       </ul>
       <ul class="navbar-nav me-4">
         <li class="nav-item">
-            <RouterLink class="nav-link" :to="{ name: 'about' }">
-                About
-            </RouterLink>
+          <UserManager />
         </li>
       </ul>
     </div>
