@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { DB_MODEL_NAMES } from './db-models.js';
 import {
     // User API Calls:
     userDataUrl,
@@ -11,6 +12,8 @@ import {
     loginUrl,
     logoutUrl,
     logoutAllUrl,
+    // CRUD API Calls:
+    modelCRUDUrlsMethods,
 } from './common-urls.js';
 
 
@@ -91,6 +94,46 @@ const logoutAllApiCall = (accessToken) => axios.post(
 );
 
 
+// DB Models API Calls:
+function composeCRUDApiCall(callName, httpMethod, url) {
+    if (httpMethod === 'get') {
+        if (callName === 'list') {
+            return (accessToken, params) => axios.get(url, {headers: authHeaderHandler(accessToken, httpMethod), params: params});
+        } else {
+            return (accessToken, id) => axios.get(url(id), {headers: authHeaderHandler(accessToken, httpMethod)});
+        }
+    }
+    if (httpMethod === 'post') {
+        return (accessToken, data) => axios.post(url, data, {headers: authHeaderHandler(accessToken, httpMethod)});
+    }
+    if (httpMethod === 'put') {
+        return (accessToken, id, data) => axios.put(url(id), data, {headers: authHeaderHandler(accessToken, httpMethod)});
+    }
+    if (httpMethod === 'patch') {
+        return (accessToken, id, data) => axios.patch(url(id), data, {headers: authHeaderHandler(accessToken, httpMethod)});
+    }
+    if (httpMethod === 'delete') {
+        return (accessToken, id) => axios.delete(url(id), {headers: authHeaderHandler(accessToken, httpMethod)});
+    }
+}
+
+const singleModelCRUDApiCalls = (modelName) => {
+    let modelUrls = modelCRUDUrlsMethods(modelName);
+    for (let [key, value] of Object.entries(modelUrls)) {
+        if (value.methods.length === 1) {
+            modelUrls[key] = composeCRUDApiCall(key, value.methods[0], value.url);
+        } else {
+            for (let method of value.methods) {
+                modelUrls[`${method}_${key}`] = composeCRUDApiCall(key, method, value.url);
+            }
+        }
+    }
+    return modelUrls;
+}
+
+const modelsCRUDApiCalls = Object.fromEntries(DB_MODEL_NAMES.map(modelName => [modelName.replaceAll('-', '_'), singleModelCRUDApiCalls(modelName)]));
+
+
 // Export all the API calls:
 export {
     // User API Calls:
@@ -104,4 +147,6 @@ export {
     loginApiCall,
     logoutApiCall,
     logoutAllApiCall,
+    // CRUD API Calls:
+    modelsCRUDApiCalls,
 };
