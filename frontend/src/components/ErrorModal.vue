@@ -5,15 +5,15 @@ import useEventsBus from '@/eventbus/eventBus.js';
 const { bus } = useEventsBus();
 
 const errorModalTriggerBtn = ref(null);
-const errorMessage = ref('');
+const errorMessage = ref(null);
 
 watch(() => bus.value.get('errorEmit'), () => {
-    errorMessage.value = '';
+    errorMessage.value =  null;
+    errorMessage.value = bus.value.get('errorEmit')[0];
     errorModalTriggerBtn.value.click();
-    for (let [key, value] of Object.entries(bus.value.get('errorEmit'))) {
-        errorMessage.value += value;
-    }
 })
+
+
 </script>
 
 <template>
@@ -29,7 +29,22 @@ watch(() => bus.value.get('errorEmit'), () => {
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="card-text">{{ errorMessage }}</p>
+                    <!-- Show simple error message if single string -->
+                    <p v-if="typeof errorMessage === 'string'" class="card-text">{{ errorMessage }}</p>
+                    <!-- Create unordered list for objects -->
+                    <ul v-else-if="typeof errorMessage === 'object'">
+                        <!-- Fill the list as it is for an array -->
+                        <li v-if="Array.isArray(errorMessage)" v-for="(error, index) in errorMessage" :key="index">{{ error }}</li>
+                        <!-- Fill create sublist for an object if needed or list "key: value" -->
+                        <div v-else>
+                           <li v-for="(value, key) in errorMessage" :key="key">{{ key }}:
+                            <ul v-if="Array.isArray(value)">
+                                <li v-for="(v, i) in value" :key="i">{{ v }}</li>
+                            </ul>
+                            <span v-else> {{ value }}</span>
+                        </li>
+                        </div>
+                    </ul>
                 </div>
             </div>
         </div>
