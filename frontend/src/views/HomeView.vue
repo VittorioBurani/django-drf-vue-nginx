@@ -6,7 +6,7 @@
     <div class="d-flex justify-content-center mx-0">
         <div class="content-wrapper">
             <img class="homepage-logo me-2" src="@/assets/logo.svg" alt="Vue.js logo. Author: https://vuejs.org/">
-            <h1 class="fs-1"><span class="mint">Home</span> - This is a Homepage</h1>
+            <h1 class="fs-1"><span class="main-color">Home</span> - This is a Homepage</h1>
         </div>
     </div>
   </main>
