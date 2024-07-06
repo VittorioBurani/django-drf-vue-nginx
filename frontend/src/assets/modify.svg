@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<svg width="480" height="480" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <!-- Created with SVGPlayground - https://svgplayground.com -->
+ <g class="layer" transform="translate(240, -120) rotate(45 0 0)">
+  <title>Layer 1</title>
+  <rect fill="#000" height="350" id="svg_1" stroke="#000" width="130" x="190" y="40"/>
+ </g>
+ <g class="layer">
+  <title>Layer 1</title>
+  <rect fill="#000" height="91.92" id="svg_2" stroke="#000" width="91.92" x="100.2" y="288.19"/>
+ </g>
+</svg>

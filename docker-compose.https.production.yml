@@ -1,7 +1,7 @@
 services:
 
   django:
-    image: ${DOCKERHUB_USERNAME:?err}/${DOCKERHUB_REPOSITORY:?err}:${VERSION:?-latest}
+    image: ${DOCKERHUB_USERNAME:?err}/${DOCKERHUB_REPOSITORY:?err}:${VERSION:-latest}
     pull_policy: always
     environment:
       DEPLOYMENT_STAGE: 'PRODUCTION'

@@ -1,3 +1,15 @@
+/*  To customize the look and feel of this appon Bootstrap5:
+
+:root {
+    --bs-primary: #0075BF;
+    --bs-primary-rgb: 0, 117, 191;
+    --bs-secondary: #E30613;
+    --bs-secondary-rgb: 227, 6, 19;
+    --bs-info: #ff4b54;
+    --bs-info-rgb: 255, 75, 84;
+}
+*/
+
 .container {
     max-width: 100%;
 }
@@ -18,12 +30,17 @@
     width: 20px;
 }
 
+.action-icon {
+    height: 16px;
+    width: 16px;
+}
+
 .loading-gif {
     width: 38px;
 }
 
 /* Add color to texts */
-.mint {
+.main-color {
     color: #4caf6d;
 }
 
