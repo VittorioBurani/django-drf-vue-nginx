@@ -46,7 +46,7 @@ export const useUserStore = defineStore('user', () => {
       emit('errorEmit', 'You must login first');
       return false;
     }
-    passwordResetApiCall(accessToken.value, new_pwd, conf_pwd)
+    return passwordResetApiCall(accessToken.value, new_pwd, conf_pwd)
       .then(() => true)
       .catch((error) => {
         emit('errorEmit', error.response.data);

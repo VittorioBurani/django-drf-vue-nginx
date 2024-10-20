@@ -62,7 +62,7 @@ async function userChangePswd() {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="loginModalLabel">Inserisci le tue credenziali</h1>
+                    <h1 class="modal-title fs-5" id="loginModalLabel">Insert your credentials</h1>
                     <button ref="loginModalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -90,21 +90,21 @@ async function userChangePswd() {
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="changePswdModalLabel">Inserisci una nuova password per continuare</h1>
+                    <h1 class="modal-title fs-5" id="changePswdModalLabel">Insert a new password for your account</h1>
                     <button ref="changePswdModalCloseBtn" type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <!-- Pswd Reset Form -->
                     <form @submit.prevent="userChangePswd">
                         <div class="mb-3">
-                            <label for="newPswdInput" class="form-label">Nuova Password</label>
+                            <label for="newPswdInput" class="form-label">New Password</label>
                             <input v-model="newPswd" type="password" class="form-control" id="newPswdInput">
                         </div>
                         <div class="mb-3">
-                            <label for="confPswdInput" class="form-label">Conferma Password</label>
+                            <label for="confPswdInput" class="form-label">Confirm Password</label>
                             <input v-model="confPswd" type="password" class="form-control" id="confPswdInput">
                         </div>
-                        <button id="changePswdBtn" type="submit" class="btn btn-primary blue-btn">Aggiorna la Password</button>
+                        <button id="changePswdBtn" type="submit" class="btn btn-primary blue-btn">Update Password</button>
                     </form>
                 </div>
             </div>
