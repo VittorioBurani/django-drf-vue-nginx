@@ -18,15 +18,15 @@ import {
 
 
 // Header utility:
-const authHeaderHandler = (accessToken, method) => {
+const authHeaderHandler = (accessToken, method, multipart=false) => {
     let ret = {'Authorization': `Bearer ${accessToken}`};
-    if (method !== 'get') ret['Content-Type'] = 'application/json';
+    if (method !== 'get') ret['Content-Type'] = multipart ? 'multipart/form-data' : 'application/json';
     return ret
 }
 
-const knoxHeaderHandler = (accessToken, method) => {
+const knoxHeaderHandler = (accessToken, method, multipart=false) => {
     let ret = {'Authorization': `Token ${accessToken}`};
-    if (method !== 'get') ret['Content-Type'] = 'application/json';
+    if (method !== 'get') ret['Content-Type'] = multipart ? 'multipart/form-data' : 'application/json';
     return ret
 }
 
