@@ -29,7 +29,7 @@ onBeforeMount(async() => {
 async function userLogin() {
     loginModalCloseBtn.value.click();
     await user.login(username.value, password.value);
-    if (user.userData.password_must_be_reset) {
+    if (user.userData.password_reset_required) {
         changePswdModalTriggerBtn.value.click();
     }
 }

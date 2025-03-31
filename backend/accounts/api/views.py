@@ -60,7 +60,7 @@ class UserPasswordResetAPIView(views.APIView):
             return Response({"error": "Passwords do not match"}, status=400)
         # Update Password:
         user.set_password(new_password)
-        user.password_must_be_reset = False
+        user.password_reset_required = False
         user.save()
         return Response(status=200)
 
