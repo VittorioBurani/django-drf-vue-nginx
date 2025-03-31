@@ -4,6 +4,8 @@ python manage.py collectstatic --noinput
 
 # Make and apply migrations:
 echo "Apply database migrations"
+python3 manage.py makemigrations accounts
+python3 manage.py makemigrations main_app
 python3 manage.py makemigrations
 python3 manage.py migrate
 
