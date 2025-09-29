@@ -21,20 +21,21 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
-# OpenAPI Schema:
-from drf_spectacular.views import SpectacularAPIView
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/auth/', include('accounts.urls')),
+    path('', include('accounts.urls')),
 ]
 
 if settings.DEBUG:
     # For MEDIA
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # OpenAPI Schema:
+
+# For OpenAPI file generation during development:
+if settings.DEPLOYMENT_STAGE != 'PRODUCTION':
+    from drf_spectacular.views import SpectacularAPIView
+    from custom.rest_knox_openapi_schema import KnoxTokenScheme # For DRF Knox Token Auth Schema Creation (import-only need: https://github.com/tfranzel/drf-spectacular/issues/264)
     urlpatterns += [
         # path('api/schema/', include('drf_spectacular.urls')),
-        path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+        path('api/docs/schema/', SpectacularAPIView.as_view(), name='schema'),
     ]

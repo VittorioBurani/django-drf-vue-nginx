@@ -10,7 +10,6 @@ from knox.auth import TokenAuthentication
 from knox.views import LoginView as KnoxLoginView
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from drf_spectacular.types import OpenApiTypes
-from accounts.utils.rest_knox_openapi_schema import KnoxTokenScheme # For DRF Knox Token Auth Schema Creation (import-only need: https://github.com/tfranzel/drf-spectacular/issues/264)
 from accounts.models import CustomUser
 from .serializers import UserDisplaySerializer, PasswordResetSerializer
 
