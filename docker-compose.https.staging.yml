@@ -3,13 +3,13 @@ services:
   django:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: backend.Dockerfile
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:?err}
     environment:
       DEPLOYMENT_STAGE: 'STAGING'
+      APP_SERVER: 'gunicorn'
     volumes:
-      - ./backend:/backend
       - static_volume:/backend/static-serve
       - media_volume:/backend/media-serve
       - ./keys:/backend/keys
@@ -36,7 +36,7 @@ services:
   nginx:
     build:
       context: ./nginx/https
-      dockerfile: Dockerfile
+      dockerfile: nginx.https.Dockerfile
       args:
         NGINX_VERSION: ${NGINX_VERSION:?err}
         DOMAIN_NAME: ${DOMAIN_NAME:?err}

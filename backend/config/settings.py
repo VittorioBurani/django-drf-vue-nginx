@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 from datetime import timedelta
+from rest_framework.settings import api_settings
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,6 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+VERSION = os.environ.get('VERSION')
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
 PRIVATE_KEY = os.environ.get('PRIVATE_KEY')
 PUBLIC_KEY = os.environ.get('PUBLIC_KEY')
@@ -47,6 +49,9 @@ BASE_URL_SECURE = f'https://{PRIVATE_SERVER_IP}:{HTTPS_PORT}'
 DOMAIN_NAME = os.environ.get('DOMAIN_NAME')
 DOMAIN_URL = f'http://{DOMAIN_NAME}'
 DOMAIN_URL_SECURE = f'https://{DOMAIN_NAME}'
+
+# Other environment related defines:
+SEND_MAIL = bool(int(os.environ.get('SEND_MAIL')))
 
 
 # Application definition
@@ -86,7 +91,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [], # [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,7 +122,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 # Django CORS Headers:
 CORS_ALLOW_ALL_ORIGINS = True
-CORS_URLS_REGEX = r"^/api/.*$"
+CORS_URLS_REGEX = r"^(/api/.*)|(/media/.*)$"
 CORS_ALLOW_METHODS = (
     "DELETE",
     "GET",
@@ -205,7 +210,7 @@ AUTHENTICATION_BACKENDS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = os.environ.get('TIME_ZONE', 'Europe/Rome')
 
 USE_I18N = True
 
@@ -222,9 +227,9 @@ else:
     EMAIL_HOST = os.environ.get('EMAIL_HOST')
     EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
     EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-    EMAIL_PORT = 465
-    EMAIL_USE_TLS = False
-    EMAIL_USE_SSL = True
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    EMAIL_USE_SSL = False
     DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL')
     DEFAULT_TO_EMAIL =   os.environ.get('DEFAULT_TO_EMAIL')
 
@@ -237,6 +242,17 @@ STATIC_URL = 'static/'
 
 MEDIA_ROOT = BASE_DIR / 'media-serve'
 MEDIA_URL = 'media/'
+
+# File upload settings:
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.MemoryFileUploadHandler',
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
+FILE_UPLOAD_DIRECTORY_PERMISSIONS = None
+FILE_UPLOAD_PERMISSIONS = 0o644
+FILE_UPLOAD_MAX_MEMORY_SIZE = 104857600 # 100MB
+FILE_UPLOAD_TEMP_DIR = '/tmp' # Force the use of a temporary directory
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -267,7 +283,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': True,
     'TITLE': f'OpenAPI Schema for {DOMAIN_NAME} Rest API',
     'DESCRIPTION': f'OpenAPI Schema for {DOMAIN_NAME} Rest API. This is not for public use. Use this schema for endpoint testing in DEBUG mode.',
-    'VERSION': os.environ.get('VERSION'),
+    'VERSION': VERSION,
     'SERVERS': [
         {
             'url': f'http://localhost:{HTTP_PORT}',
@@ -284,12 +300,17 @@ SPECTACULAR_SETTINGS = {
 
 # DJANGO REST KNOX Settings:
 REST_KNOX = {
-    'SECURE_HASH_ALGORITHM': 'cryptography.hazmat.primitives.hashes.SHA512',
+    'SECURE_HASH_ALGORITHM': 'hashlib.sha3_512',
     'AUTH_TOKEN_CHARACTER_LENGTH': 64,
-    'TOKEN_TTL': timedelta(hours=10),
+    'TOKEN_TTL': timedelta(hours=24),
     'USER_SERIALIZER': 'knox.serializers.UserSerializer',
     'TOKEN_LIMIT_PER_USER': 5,
-    'AUTO_REFRESH': False,
+    'AUTO_REFRESH': True,
+    'AUTO_REFRESH_MAX_TTL': timedelta(days=7),
+    'MIN_REFRESH_INTERVAL': 60,
+    'AUTH_HEADER_PREFIX': 'Token',
+    'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
+    'TOKEN_MODEL': 'knox.AuthToken',
 }
 
 

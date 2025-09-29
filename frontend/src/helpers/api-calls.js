@@ -1,6 +1,8 @@
 import axios from 'axios';
-import { DB_MODEL_NAMES } from './db-models.js';
+import { DB_MODEL_APIS } from './db-models.js';
 import {
+    // Base url for custom API Calls:
+    BACKEND_API_URL,
     // User API Calls:
     userDataUrl,
     passwordResetUrl,
@@ -13,11 +15,14 @@ import {
     logoutUrl,
     logoutAllUrl,
     // CRUD API Calls:
-    modelCRUDUrlsMethods,
+    modelCRUDLBUrlsMethods,
 } from './common-urls.js';
 
 
-// Header utility:
+//////////////////////
+// Header utilities //
+//////////////////////
+
 const authHeaderHandler = (accessToken, method, multipart=false) => {
     let ret = {'Authorization': `Bearer ${accessToken}`};
     if (method !== 'get') ret['Content-Type'] = multipart ? 'multipart/form-data' : 'application/json';
@@ -31,20 +36,10 @@ const knoxHeaderHandler = (accessToken, method, multipart=false) => {
 }
 
 
-// User API Calls:
-const userDataApiCall = (accessToken) => axios.get(userDataUrl, {headers: authHeaderHandler(accessToken, 'get')});
+///////////////////
+// JWT API Calls //
+///////////////////
 
-const passwordResetApiCall = (accessToken, new_pwd, conf_pwd) => axios.post(
-    passwordResetUrl,
-    {
-        new_password: new_pwd,
-        confirm_password: conf_pwd,
-    },
-    {headers: authHeaderHandler(accessToken, 'post')},
-);
-
-
-// JWT API Calls:
 const accessTokenApiCall = (username, password) => axios.post(
     accessTokenUrl,
     {
@@ -71,7 +66,10 @@ const verifyTokenApiCall = (accessToken) => axios.post(
 );
 
 
-// Knox API Calls:
+////////////////////
+// Knox API Calls //
+////////////////////
+
 const loginApiCall = (username, password) => axios.post(
     loginUrl,
     {
@@ -94,44 +92,74 @@ const logoutAllApiCall = (accessToken) => axios.post(
 );
 
 
-// DB Models API Calls:
-function composeCRUDApiCall(callName, httpMethod, url) {
+///////////////////////////////////
+// Current Logged User API Calls //
+///////////////////////////////////
+
+const userDataApiCall = (accessToken) => axios.get(userDataUrl, {headers: knoxHeaderHandler(accessToken, 'get')});
+
+const passwordResetApiCall = (accessToken, new_pwd, conf_pwd) => axios.post(
+    passwordResetUrl,
+    {
+        new_password: new_pwd,
+        confirm_password: conf_pwd,
+    },
+    {headers: knoxHeaderHandler(accessToken, 'post')},
+);
+
+
+////////////////////////////////
+// DB Models CRUDLB API Calls //
+////////////////////////////////
+
+function composeCRUDLBApiCall(callName, httpMethod, url, multipart) {
+    // RL actions
     if (httpMethod === 'get') {
         if (callName === 'list') {
-            return (accessToken, params) => axios.get(url, {headers: authHeaderHandler(accessToken, httpMethod), params: params});
+            return (accessToken, params) => axios.get(url, {headers: knoxHeaderHandler(accessToken, httpMethod, multipart), params: params});
         } else {
-            return (accessToken, id) => axios.get(url(id), {headers: authHeaderHandler(accessToken, httpMethod)});
+            return (accessToken, id) => axios.get(url(id), {headers: knoxHeaderHandler(accessToken, httpMethod, multipart)});
         }
     }
+    // CB actions
     if (httpMethod === 'post') {
-        return (accessToken, data) => axios.post(url, data, {headers: authHeaderHandler(accessToken, httpMethod)});
+        return (accessToken, data) => axios.post(url, data, {headers: knoxHeaderHandler(accessToken, httpMethod, multipart)});
     }
+    // U actions
     if (httpMethod === 'put') {
-        return (accessToken, id, data) => axios.put(url(id), data, {headers: authHeaderHandler(accessToken, httpMethod)});
+        return (accessToken, id, data) => axios.put(url(id), data, {headers: knoxHeaderHandler(accessToken, httpMethod, multipart)});
     }
     if (httpMethod === 'patch') {
-        return (accessToken, id, data) => axios.patch(url(id), data, {headers: authHeaderHandler(accessToken, httpMethod)});
+        return (accessToken, id, data) => axios.patch(url(id), data, {headers: knoxHeaderHandler(accessToken, httpMethod, multipart)});
     }
+    // D action
     if (httpMethod === 'delete') {
-        return (accessToken, id) => axios.delete(url(id), {headers: authHeaderHandler(accessToken, httpMethod)});
+        return (accessToken, id) => axios.delete(url(id), {headers: knoxHeaderHandler(accessToken, httpMethod, multipart)});
     }
 }
 
-const singleModelCRUDApiCalls = (modelName) => {
-    let modelUrls = modelCRUDUrlsMethods(modelName);
+const singleModelCRUDLBApiCalls = (modelBaseUrl, modelActions) => {
+    let modelUrls = modelCRUDLBUrlsMethods(modelBaseUrl, modelActions);
     for (let [key, value] of Object.entries(modelUrls)) {
         if (value.methods.length === 1) {
-            modelUrls[key] = composeCRUDApiCall(key, value.methods[0], value.url);
+            modelUrls[key] = composeCRUDLBApiCall(key, value.methods[0], value.url, value.multipart);
         } else {
             for (let method of value.methods) {
-                modelUrls[`${method}_${key}`] = composeCRUDApiCall(key, method, value.url);
+                modelUrls[`${method}_${key}`] = composeCRUDLBApiCall(key, method, value.url, value.multipart);
             }
         }
     }
     return modelUrls;
 }
 
-const modelsCRUDApiCalls = Object.fromEntries(DB_MODEL_NAMES.map(modelName => [modelName.replaceAll('-', '_'), singleModelCRUDApiCalls(modelName)]));
+const modelAPIs = Object.fromEntries(DB_MODEL_APIS.map(model => [model.name.replaceAll('-', '_'), singleModelCRUDLBApiCalls(model.base_url, model.actions)]));
+
+
+////////////////////////////////
+// DB Models Custom API Calls //
+////////////////////////////////
+
+// ... To be added if any ...
 
 
 // Export all the API calls:
@@ -148,5 +176,5 @@ export {
     logoutApiCall,
     logoutAllApiCall,
     // CRUD API Calls:
-    modelsCRUDApiCalls,
+    modelAPIs,
 };

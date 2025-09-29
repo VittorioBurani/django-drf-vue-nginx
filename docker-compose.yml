@@ -3,7 +3,7 @@ services:
   django:
     build:
       context: ./backend
-      dockerfile: Dockerfile
+      dockerfile: backend.Dockerfile
       args:
         PYTHON_VERSION: ${PYTHON_VERSION:?err}
     environment:
