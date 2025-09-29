@@ -7,8 +7,14 @@ class CustomUserCreationForm(UserCreationForm):
         model = CustomUser
         fields = ("username", "email")
 
+    def clean(self):
+        super().clean()
+
 
 class CustomUserChangeForm(UserChangeForm):
     class Meta:
         model = CustomUser
         fields = ("username", "email")
+
+    def clean(self):
+        super().clean()
