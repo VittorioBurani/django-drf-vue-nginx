@@ -1,8 +1,0 @@
-function formatTimezone(timezone) {
-    let splitted = timezone.split('T');
-    return `${splitted[0]}, ${splitted[1].split('.')[0]}`;
-}
-
-export {
-    formatTimezone,
-}
