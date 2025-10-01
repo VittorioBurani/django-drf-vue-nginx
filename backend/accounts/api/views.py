@@ -11,7 +11,7 @@ from knox.auth import TokenAuthentication
 from knox.views import LoginView as KnoxLoginView
 from drf_spectacular.utils import extend_schema
 from django_filters.rest_framework import DjangoFilterBackend
-from custom.std_openapi_responses import OK_EMPTY_BODY, BAD_REQUEST, UNAUTHORIZED, FORBIDDEN
+from custom.std_openapi_response import OK_EMPTY_BODY, BAD_REQUEST, UNAUTHORIZED, FORBIDDEN
 from accounts.models import CustomUser
 from accounts.permissions import (
     is_blocked,
